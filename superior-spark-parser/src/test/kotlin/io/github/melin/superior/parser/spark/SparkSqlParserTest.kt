@@ -426,6 +426,7 @@ class SparkSqlParserTest {
     fun descTableTest0() {
         val sql = "desc table users"
         val statement = SparkSqlHelper.parseStatement(sql)
+        statement as DescStatement
         Assert.assertEquals(StatementType.DESC, statement.statementType)
     }
 
@@ -2225,7 +2226,7 @@ class SparkSqlParserTest {
     fun insertOverwriteDirTest() {
         val sql = """
             with test as (
-                select a, b from aaa
+                select a, b from aaa.bbb
             )
             insert overwrite directory 'hdfs://xxx' row format delimited fields terminated by '\t'
             select a, b from test
@@ -2238,5 +2239,18 @@ class SparkSqlParserTest {
         } else {
             Assert.fail()
         }
+    }
+
+    @Test
+    fun tableDataTest() {
+        val sql = """
+            select * from bbb.aaa
+        """.trimIndent()
+        val tableData = SparkSqlHelper.getTableData(sql)
+        println(tableData.sqlType)
+        println(tableData.privilegeType)
+        println(tableData.statementType)
+        println(tableData.inputTables)
+        println(tableData.outputTables)
     }
 }

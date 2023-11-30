@@ -4,6 +4,7 @@ import com.github.melin.superior.sql.parser.util.CommonUtils.KEYWORD_REGEX
 import io.github.melin.superior.common.relational.Statement
 import io.github.melin.superior.common.StatementType
 import io.github.melin.superior.common.StatementType.*
+import io.github.melin.superior.parser.spark.relational.TableData
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.atn.PredictionMode
@@ -90,6 +91,11 @@ object SparkSqlHelper {
         }
 
         return keywords.sorted()
+    }
+
+    @JvmStatic fun getTableData(command: String): TableData {
+        val statement = this.parseStatement(command)
+        return TableData().generateTableData(statement)
     }
 
     @JvmStatic fun parseStatement(command: String): Statement {
